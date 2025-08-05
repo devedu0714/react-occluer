@@ -115,68 +115,98 @@ const PostsList = () => {
 - **Vite** - 빠른 개발 환경
 - **Styled Components** - CSS-in-JS 스타일링
 
-## GIT 커밋 컨벤션
+## 📝 Git 커밋 컨벤션
 
-# 제목은 최대 50글자까지 아래에 작성: ex) Feat: Add Key mapping
+프로젝트의 일관성 있는 커밋 메시지를 위해 다음 컨벤션을 따릅니다.
 
-# 본문은 아래에 작성
+### 🏷️ 커밋 타입
 
-# 꼬릿말은 아래에 작성: ex) Github issue #23
+| 타입       | 설명                                       | 예시                                     |
+| ---------- | ------------------------------------------ | ---------------------------------------- |
+| `feat`     | 새로운 기능 추가                           | `feat: Add user authentication`          |
+| `fix`      | 버그 수정                                  | `fix: Resolve login validation issue`    |
+| `refactor` | 코드 리팩토링                              | `refactor: Simplify API call logic`      |
+| `design`   | UI/UX 디자인 변경                          | `design: Update button styling`          |
+| `style`    | 코드 스타일 변경 (비즈니스 로직 변경 없음) | `style: Add semicolons`                  |
+| `docs`     | 문서 수정                                  | `docs: Update README installation guide` |
+| `test`     | 테스트 코드 추가/수정                      | `test: Add unit tests for utils`         |
+| `chore`    | 빌드 프로세스, 패키지 매니저 등            | `chore: Update dependencies`             |
+| `init`     | 프로젝트 초기 설정                         | `init: Setup React project`              |
+| `rename`   | 파일/폴더명 변경                           | `rename: Move components to src/`        |
+| `remove`   | 파일 삭제                                  | `remove: Delete unused assets`           |
 
-# --- COMMIT END ---
+### 📋 커밋 메시지 구조
 
-# <타입> 리스트
+```
+<타입>: <제목>
 
-# feat : 기능 (새로운 기능)
+<본문>
 
-# fix : 버그 (버그 수정)
+<꼬리말>
+```
 
-# refactor : 리팩토링
+### ✨ 작성 규칙
 
-# design : CSS 등 사용자 UI 디자인 변경
+#### 제목 (Title)
 
-# comment : 필요한 주석 추가 및 변경
+- **최대 50자**로 제한
+- **첫 글자는 대문자**로 시작
+- **명령문**으로 작성 (Add, Fix, Update 등)
+- **마침표(.) 사용 금지**
+- **한국어 사용 가능**
 
-# style : 스타일 (코드 형식, 세미콜론 추가: 비즈니스 로직에 변경 없음)
+#### 본문 (Body)
 
-# docs : 문서 수정 (문서 추가, 수정, 삭제, README)
+- **제목과 한 줄 띄워서** 작성
+- **"무엇을", "왜"**에 집중하여 설명
+- **여러 줄** 작성 시 `-`로 구분
 
-# test : 테스트 (테스트 코드 추가, 수정, 삭제: 비즈니스 로직에 변경 없음)
+#### 꼬리말 (Footer)
 
-# chore : 기타 변경사항 (빌드 스크립트 수정, assets, 패키지 매니저 등)
+- **선택사항** (optional)
+- **이슈 번호** 연결 시 사용
 
-# init : 초기 생성
+### 🔗 이슈 연결
 
-# rename : 파일 혹은 폴더명을 수정하거나 옮기는 작업만 한 경우
+| 키워드       | 설명                  | 예시                   |
+| ------------ | --------------------- | ---------------------- |
+| `Fixes`      | 이슈 수정 중 (미해결) | `Fixes: #47`           |
+| `Resolves`   | 이슈 해결 완료        | `Resolves: #23`        |
+| `Ref`        | 참고 이슈             | `Ref: #12`             |
+| `Related to` | 관련 이슈             | `Related to: #32, #21` |
 
-# remove : 파일을 삭제하는 작업만 수행한 경우
+### 📝 커밋 예시
 
-# ------------------
+```bash
+# 기능 추가
+feat: Add dark mode toggle functionality
 
-# 제목 첫 글자를 대문자로
+- Implement theme switching with Zustand
+- Add theme persistence in localStorage
+- Update all components to support dark mode
 
-# 제목은 명령문으로
+Resolves: #15
 
-# 제목 끝에 마침표(.) 금지
+# 버그 수정
+fix: Resolve API timeout issue
 
-# 제목과 본문을 한 줄 띄워 분리하기
+- Increase timeout from 5s to 10s
+- Add retry mechanism for failed requests
+- Update error handling for timeout cases
 
-# 본문은 "어떻게" 보다 "무엇을", "왜"를 설명한다.
+Fixes: #28
 
-# 본문에 여러줄의 메시지를 작성할 땐 "-"로 구분
+# 문서 수정
+docs: Update API documentation
 
-# ------------------
+- Add new endpoint examples
+- Update authentication guide
+- Fix broken links in README
 
-# <꼬리말>
+# 스타일 변경
+style: Format code with Prettier
 
-# 필수가 아닌 optioanl
-
-# Fixes :이슈 수정중 (아직 해결되지 않은 경우)
-
-# Resolves : 이슈 해결했을 때 사용
-
-# Ref : 참고할 이슈가 있을 때 사용
-
-# Related to : 해당 커밋에 관련된 이슈번호 (아직 해결되지 않은 경우)
-
-# ex) Fixes: #47 Related to: #32, #21
+- Apply consistent indentation
+- Add missing semicolons
+- Remove trailing whitespace
+```
