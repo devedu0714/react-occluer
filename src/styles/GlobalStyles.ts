@@ -135,6 +135,10 @@ export const GlobalStyles = createGlobalStyle`
   html {
     font-size: 16px;
     scroll-behavior: smooth;
+    /* 모바일에서 더블탭 시 확대 방지 */
+    touch-action: manipulation;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
   }
 
   body {
@@ -167,6 +171,10 @@ export const GlobalStyles = createGlobalStyle`
   input, textarea {
     font-family: inherit;
     outline: none;
+    /* iOS에서 input 진입 시 확대 방지 */
+    font-size: 16px;
+    -webkit-appearance: none;
+    border-radius: 0;
   }
 
   ul, ol {
@@ -206,5 +214,25 @@ export const GlobalStyles = createGlobalStyle`
   ::selection {
     background-color: #007bff;
     color: white;
+  }
+
+  /* 모바일 터치 이벤트 최적화 */
+  * {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  /* 텍스트 선택이 필요한 요소들 */
+  input, textarea, [contenteditable] {
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
   }
 `;

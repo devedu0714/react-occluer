@@ -1,11 +1,13 @@
 import styled from "styled-components";
 import { useAppStore } from "../store/useAppStore";
+import logger from "../utils/logger";
+import { useNavigate } from "react-router-dom";
 
 const LayoutContainer = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding-bottom: 80px;
+  padding-bottom: 50px;
 `;
 
 const Main = styled.main`
@@ -80,6 +82,24 @@ const ThemeToggle = styled.button<{ theme: "light" | "dark" }>`
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const { theme, toggleTheme } = useAppStore();
+  const navigate = useNavigate();
+
+  // 네비게이션 기능 추가 예정
+  const homeHandler = () => {
+    navigate("/");
+  };
+
+  const searchHandler = () => {
+    logger.log("search");
+  };
+
+  const addHandler = () => {
+    logger.log("add");
+  };
+
+  const profileHandler = () => {
+    logger.log("profile");
+  };
 
   return (
     <LayoutContainer>
@@ -87,13 +107,13 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
       <BottomNav>
         <NavContainer>
-          <NavButton>🏠</NavButton>
-          <NavButton>🔍</NavButton>
-          <NavButton>➕</NavButton>
+          <NavButton onClick={homeHandler}>🏠</NavButton>
+          <NavButton onClick={searchHandler}>🔍</NavButton>
+          <NavButton onClick={addHandler}>➕</NavButton>
           <NavButton onClick={toggleTheme}>
             {theme === "light" ? "🌙" : "☀️"}
           </NavButton>
-          <NavButton>👤</NavButton>
+          <NavButton onClick={profileHandler}>👤</NavButton>
         </NavContainer>
       </BottomNav>
     </LayoutContainer>

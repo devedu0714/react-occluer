@@ -4,6 +4,7 @@ import HomePage from "./pages/HomePage";
 import Layout from "./components/Layout";
 import { GlobalStyles } from "./styles/GlobalStyles";
 import { useAppStore } from "./store/useAppStore";
+import NoPage from "./pages/NoPage";
 
 const AppContainer = styled.div<{ theme: "light" | "dark" }>`
   min-height: 100vh;
@@ -23,6 +24,8 @@ function App() {
         <Layout>
           <Routes>
             <Route path="/" element={<HomePage />} />
+            {/* no page */}
+            <Route path="*" element={<NoPage />} />
           </Routes>
         </Layout>
       </AppContainer>
