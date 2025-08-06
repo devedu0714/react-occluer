@@ -5,6 +5,8 @@ import Layout from "./components/Layout";
 import { GlobalStyles } from "./styles/GlobalStyles";
 import { useAppStore } from "./store/useAppStore";
 import NoPage from "./pages/NoPage";
+import LoginPage from "./pages/LoginPage";
+import MyPage from "./pages/MyPage";
 
 const AppContainer = styled.div<{ theme: "light" | "dark" }>`
   min-height: 100vh;
@@ -23,9 +25,14 @@ function App() {
       <AppContainer theme={theme}>
         <Layout>
           <Routes>
-            <Route path="/" element={<HomePage />} />
             {/* no page */}
             <Route path="*" element={<NoPage />} />
+            {/* main page */}
+            <Route path="/" element={<HomePage />} />
+            {/* 로그인 */}
+            <Route path="/login" element={<LoginPage />} />
+            {/* 마이페이지 */}
+            <Route path="/myPage" element={<MyPage />} />
           </Routes>
         </Layout>
       </AppContainer>

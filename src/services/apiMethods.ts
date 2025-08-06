@@ -62,4 +62,16 @@ export const m_app_gift_i = (data: any) => {
   return _httpReq("m_app_gift_i", data);
 };
 
+// 로그인 API 함수
+export const m_app_login = (data: {
+  email: string;
+  password: string;
+  easy_yn: string;
+  uniq_key: string;
+  token: string;
+}) => {
+  logger.log("============ >>>>>> 로그인 요청 -", JSON.stringify(data));
+  return _httpReq("m_app_login", data);
+};
+
 export default ApiService;

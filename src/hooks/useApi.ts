@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ApiService } from "../services/apiMethods";
+import { ApiService, m_app_login } from "../services/apiMethods";
 
 // ===== 사용자 관련 훅 =====
 export const useUserLogin = () => {
@@ -8,6 +8,20 @@ export const useUserLogin = () => {
   return useMutation({
     mutationFn: ApiService.user.login,
     onSuccess: (data) => {
+      // 로그인 성공 시 사용자 정보 캐시 설정
+      queryClient.setQueryData(["user"], data);
+    },
+  });
+};
+
+// m_app_login 훅
+export const useAppLogin = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: m_app_login,
+    onSuccess: (response) => {
+      const data = response.data;
       // 로그인 성공 시 사용자 정보 캐시 설정
       queryClient.setQueryData(["user"], data);
     },

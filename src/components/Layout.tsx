@@ -83,6 +83,8 @@ const ThemeToggle = styled.button<{ theme: "light" | "dark" }>`
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const { theme, toggleTheme } = useAppStore();
   const navigate = useNavigate();
+  const { isLoggedIn } = useAppStore();
+  logger.info(isLoggedIn);
 
   // 네비게이션 기능 추가 예정
   const homeHandler = () => {
@@ -99,6 +101,14 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   const profileHandler = () => {
     logger.log("profile");
+    // 버튼 클릭시 로그인 여부에 따라서 페이지 이동
+    // 로그인이 되어있는 경우 마이페이지
+    // 로그인이 되어있지 않은 경우 로그인 페이지
+    if (isLoggedIn === true) {
+      navigate("/myPage");
+    } else {
+      navigate("/login");
+    }
   };
 
   return (

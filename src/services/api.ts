@@ -1,8 +1,9 @@
 import axios from "axios";
+import { BASE_URL } from "../utils/Config";
 
 // API 설정
 export const API_CONFIG = {
-  BASE_URL: "https://jsonplaceholder.typicode.com", // 실제 API URL로 변경
+  BASE_URL: BASE_URL, // 실제 API URL로 변경
   TIMEOUT: 10000,
   HEADERS: {
     "Content-Type": "application/json",
