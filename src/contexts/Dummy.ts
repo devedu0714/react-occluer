@@ -104,3 +104,99 @@ export const dummyNotice = [
     date: "2025-08-06",
   },
 ];
+
+export const dummySearch = [
+  {
+    id: 1,
+    title: "식당",
+    num: 10,
+  },
+  {
+    id: 2,
+    title: "카페",
+    num: 25,
+  },
+  {
+    id: 3,
+    title: "술집",
+    num: 17,
+  },
+  {
+    id: 4,
+    title: "학원",
+    num: 48,
+  },
+  {
+    id: 5,
+    title: "헬스",
+    num: 204,
+  },
+  {
+    id: 6,
+    title: "놀이",
+    num: 12,
+  },
+  {
+    id: 7,
+    title: "옷가게",
+    num: 7,
+  },
+  {
+    id: 8,
+    title: "오락실",
+    num: 2,
+  },
+  {
+    id: 9,
+    title: "노래방",
+    num: 5,
+  },
+];
+
+export const dummyFood = [
+  {
+    id: 1,
+    title: "한식",
+    num: 10,
+  },
+  {
+    id: 2,
+    title: "중식",
+    num: 10,
+  },
+  {
+    id: 3,
+    title: "일식",
+    num: 10,
+  },
+  {
+    id: 4,
+    title: "양식",
+    num: 10,
+  },
+  {
+    id: 5,
+    title: "패스트푸드",
+    num: 10,
+  },
+  {
+    id: 6,
+    title: "베트남",
+    num: 10,
+  },
+  {
+    id: 7,
+    title: "인도식",
+    num: 10,
+  },
+  {
+    id: 8,
+    title: "퓨전",
+    num: 10,
+  },
+  {
+    id: 9,
+    title: "해산물",
+    num: 10,
+  },
+];

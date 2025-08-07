@@ -59,7 +59,9 @@ export const useAppStore = create<AppState>()(
       setTheme: (theme) => set({ theme }),
       setLogin: (isLoggedIn, user) => {
         set({ isLoggedIn, user });
+
         // localStorage에도 직접 저장
+        // 하지않으면 새로고침시 로그인 상태가 유지되지 않음
         localStorage.setItem("isLogin", isLoggedIn ? "true" : "false");
         if (user) {
           localStorage.setItem("user", JSON.stringify(user));

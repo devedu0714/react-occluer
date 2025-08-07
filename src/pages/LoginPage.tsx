@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Input, Button, message, Typography } from "antd";
+import { Input, Button, message } from "antd";
 import { useEffect, useState } from "react";
 import { useAppLogin } from "../hooks/useApi";
 import { useAppStore } from "../store/useAppStore";
@@ -38,42 +38,28 @@ const SocialLoginContainer = styled.div<{ isIOS: boolean }>`
   display: ${({ isIOS }) => (isIOS ? "none" : "flex")};
   justify-content: center;
   gap: 1rem;
+  margin-bottom: 20px;
 `;
 
 const LoginFormWrap = styled.div`
   width: 100%;
   padding: 0 15px;
+`;
 
-  .ant-input {
-    border: none;
-    border-bottom: 1px solid #000;
-    border-radius: 0;
-    padding: 0 0 10px 0;
-    font-size: 16px;
-    font-weight: 400;
-    color: #000;
-  }
-
-  .ant-input-affix-wrapper {
-    border: none;
-    border-bottom: 1px solid #000;
-    border-radius: 0;
-    padding: 0 0 10px 0;
-    margin: 0;
-    font-size: 16px;
-  }
-
-  .ant-btn {
-    width: 100%;
-    font-size: 18px !important;
-    padding: 6px !important;
-    border-radius: 50px !important;
-
-    color: white !important;
-  }
+const SmallButton = styled(Button)`
+  font-size: 10px !important;
+  padding: 6px 8px !important;
+  color: #777 !important;
+  border: none !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
 `;
 
 const LoginButton = styled(Button)<{ disabled: boolean }>`
+  width: 100% !important;
+  margin-top: 20px !important;
+  border-radius: 16px !important;
+  font-size: 16px !important;
   background-color: ${(props) =>
     props.disabled ? "#ccc" : "#00b375"} !important;
 `;
@@ -98,14 +84,22 @@ const StyledSocialButton = styled.button<{ backgroundColor: string }>`
   }
 `;
 
-const NaverLoginButton = styled.div`
-  #naverIdLogin {
-    display: inline-block;
-    margin: 0 auto;
-    width: 100%;
-    max-width: 300px;
-    height: 50px;
-  }
+// 네이버 로그인 추후 추가
+// const NaverLoginButton = styled.div`
+//   #naverIdLogin {
+//     display: inline-block;
+//     margin: 0 auto;
+//     width: 100%;
+//     max-width: 300px;
+//     height: 50px;
+//   }
+// `;
+
+const HomeButton = styled(Button)`
+  font-size: 10px !important;
+  color: #777 !important;
+  border: none !important;
+  box-shadow: none !important;
 `;
 
 const LoginPage = () => {
@@ -190,27 +184,30 @@ const LoginPage = () => {
           type="primary"
           onClick={loginHandler}
           loading={isPending}
-          style={{ marginTop: "20px" }}
           disabled={!id.trim() || !password.trim()}
         >
           로그인
         </LoginButton>
       </LoginFormWrap>
       <LinkContainer>
-        <Button variant="text" onClick={() => navigate("/Edit/MissID")}>
-          <Typography color="#000">아이디 찾기</Typography>
-        </Button>
-        <Button variant="text" onClick={() => navigate("/Edit/MissPassword")}>
-          <Typography color="#000">비밀번호 재설정</Typography>
-        </Button>
-        <Button variant="text" onClick={() => navigate("/SignUp/Select")}>
-          <Typography color="#000">회원가입</Typography>
-        </Button>
+        <SmallButton variant="text" onClick={() => navigate("/Edit/MissID")}>
+          아이디 찾기
+        </SmallButton>
+        <SmallButton
+          variant="text"
+          onClick={() => navigate("/Edit/MissPassword")}
+        >
+          비밀번호 재설정
+        </SmallButton>
+        <SmallButton variant="text" onClick={() => navigate("/Join")}>
+          회원가입
+        </SmallButton>
       </LinkContainer>
       <SocialLoginContainer isIOS={false}>
-        <NaverLoginButton>
+        {/* 네이버 로그인 추후 추가 */}
+        {/* <NaverLoginButton>
           <div id="naverIdLogin"></div>
-        </NaverLoginButton>
+        </NaverLoginButton> */}
         <StyledSocialButton
           onClick={handleKakaoLogin}
           backgroundColor="#ffe812"
@@ -224,6 +221,9 @@ const LoginPage = () => {
           <img src={AppleLogo} alt="애플" />
         </StyledSocialButton>
       </SocialLoginContainer>
+      <HomeButton type="link" onClick={() => navigate("/")}>
+        둘러보기
+      </HomeButton>
     </LoginContainer>
   );
 };

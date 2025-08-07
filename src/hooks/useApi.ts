@@ -1,54 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ApiService, m_app_login } from "../services/apiMethods";
+import { m_app_login, m_app_join } from "../services/apiMethods";
+import logger from "../utils/logger";
 
-// ===== 사용자 관련 훅 =====
-export const useUserLogin = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ApiService.user.login,
-    onSuccess: (data) => {
-      // 로그인 성공 시 사용자 정보 캐시 설정
-      queryClient.setQueryData(["user"], data);
-    },
-  });
-};
-
-// m_app_login 훅
-export const useAppLogin = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: m_app_login,
-    onSuccess: (response) => {
-      const data = response.data;
-      // 로그인 성공 시 사용자 정보 캐시 설정
-      queryClient.setQueryData(["user"], data);
-    },
-  });
-};
-
-export const useUserProfile = () => {
-  return useQuery({
-    queryKey: ["user", "profile"],
-    queryFn: ApiService.user.getProfile,
-    staleTime: 10 * 60 * 1000, // 10분
-  });
-};
-
-export const useUserUpdate = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ApiService.user.updateProfile,
-    onSuccess: (data) => {
-      // 사용자 정보 캐시 업데이트
-      queryClient.setQueryData(["user", "profile"], data);
-    },
-  });
-};
-
-// ===== 범용 API 훅 (기존 방식과 호환) =====
+// ===== 범용 API 훅 =====
 export const useApiQuery = <T>(
   key: string[],
   queryFn: () => Promise<T>,
@@ -88,6 +42,32 @@ export const useApiMutation = <T, V>(
     },
     onError: (error) => {
       options?.onError?.(error);
+    },
+  });
+};
+
+// ===== 사용자 관련 훅 =====
+
+// m_app_login 훅 (로그인)
+export const useAppLogin = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: m_app_login,
+    onSuccess: (response) => {
+      const data = response.data;
+      // 로그인 성공 시 사용자 정보 캐시 설정
+      queryClient.setQueryData(["user"], data);
+    },
+  });
+};
+
+// fake join 훅 (회원가입)
+export const useAppJoin = () => {
+  return useMutation({
+    mutationFn: m_app_join,
+    onSuccess: (response) => {
+      logger.log("============ >>>>>> 회원가입 성공 -", response);
     },
   });
 };

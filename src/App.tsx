@@ -7,6 +7,7 @@ import { useAppStore } from "./store/useAppStore";
 import NoPage from "./pages/NoPage";
 import LoginPage from "./pages/LoginPage";
 import MyPage from "./pages/MyPage";
+import JoinPage from "./pages/JoinPage";
 
 const AppContainer = styled.div<{ theme: "light" | "dark" }>`
   min-height: 100vh;
@@ -33,6 +34,8 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             {/* 마이페이지 */}
             <Route path="/myPage" element={<MyPage />} />
+            {/* 회원가입 */}
+            <Route path="/join" element={<JoinPage />} />
           </Routes>
         </Layout>
       </AppContainer>

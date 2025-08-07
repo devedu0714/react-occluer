@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { useAppStore } from "../store/useAppStore";
 import logger from "../utils/logger";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { SearchModal } from "./SearchModal";
 
 const LayoutContainer = styled.div`
   min-height: 100vh;
@@ -60,31 +62,12 @@ const NavButton = styled.button<{ $active?: boolean }>`
   }
 `;
 
-const ThemeToggle = styled.button<{ theme: "light" | "dark" }>`
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background: ${(props) => (props.theme === "dark" ? "#333" : "#fff")};
-  border: 1px solid ${(props) => (props.theme === "dark" ? "#555" : "#ddd")};
-  color: ${(props) => (props.theme === "dark" ? "#fff" : "#333")};
-  padding: 8px 12px;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  z-index: 1001;
-  font-size: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-
-  &:hover {
-    transform: scale(1.05);
-  }
-`;
-
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  const { theme, toggleTheme } = useAppStore();
   const navigate = useNavigate();
-  const { isLoggedIn } = useAppStore();
-  logger.info(isLoggedIn);
+  const { theme, toggleTheme, isLoggedIn } = useAppStore();
+
+  // 검색 모달 오픈 상태
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
   // 네비게이션 기능 추가 예정
   const homeHandler = () => {
@@ -92,7 +75,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   };
 
   const searchHandler = () => {
-    logger.log("search");
+    setIsSearchModalOpen(true);
   };
 
   const addHandler = () => {
@@ -126,6 +109,12 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           <NavButton onClick={profileHandler}>👤</NavButton>
         </NavContainer>
       </BottomNav>
+
+      {/* 검색 모달 */}
+      <SearchModal
+        open={isSearchModalOpen}
+        onCancel={() => setIsSearchModalOpen(false)}
+      />
     </LayoutContainer>
   );
 };
