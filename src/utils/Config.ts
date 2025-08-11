@@ -1,11 +1,9 @@
 // 3.36~~ 운영
 // 183.103~~ 개발
 
-export const BASE_URL = "http://183.103.166.187/carbon/";
-// export const BASE_URL = "http://3.36.23.21:8080/carbon/";
+export const BASE_URL = "http://183.103.166.187/ocler/";
 
-// export const IMG_URL = "http://183.103.166.187/resimg/carbon";
-export const IMG_URL = "http://3.36.23.21:8080/resource/carbon";
+export const IMG_URL = "http://183.103.166.187/resimg/ocler/";
 
 export const APP_VERSION = import.meta.env.VITE_APP_VERSION;
 
@@ -24,6 +22,6 @@ export default {
   AS_KEY_LOGIN_INFO: "as_key_login_info",
 
   // ****************** 공통 사용 코드
-  APP_VER: "0.1.01",
+  APP_VER: APP_VERSION,
   IS_LOG: import.meta.env.VITE_PUBLIC_NODE_ENV === "development",
 };

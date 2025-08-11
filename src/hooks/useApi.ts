@@ -1,5 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { m_app_login, m_app_join } from "../services/apiMethods";
+import {
+  m_app_login,
+  m_app_join,
+  m_app_email_check,
+  m_app_handphone_check,
+} from "../services/apiMethods";
 import logger from "../utils/logger";
 
 // ===== 범용 API 훅 =====
@@ -62,12 +67,32 @@ export const useAppLogin = () => {
   });
 };
 
-// fake join 훅 (회원가입)
+// m_app_join 훅 (회원가입)
 export const useAppJoin = () => {
   return useMutation({
     mutationFn: m_app_join,
     onSuccess: (response) => {
       logger.log("============ >>>>>> 회원가입 성공 -", response);
+    },
+  });
+};
+
+// m_app_email_check 훅 (이메일 중복확인)
+export const useAppEmailCheck = () => {
+  return useMutation({
+    mutationFn: m_app_email_check,
+    onSuccess: (response) => {
+      logger.log("============ >>>>>> 이메일 중복확인 성공 -", response);
+    },
+  });
+};
+
+// m_app_handphone_check 훅 (휴대폰 중복확인)
+export const useAppPhoneCheck = () => {
+  return useMutation({
+    mutationFn: m_app_handphone_check,
+    onSuccess: (response) => {
+      logger.log("============ >>>>>> 휴대폰 중복확인 성공 -", response);
     },
   });
 };

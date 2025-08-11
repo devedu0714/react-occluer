@@ -1,12 +1,18 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Button, Input, Typography, Checkbox, Form } from "antd";
+import { Button, Input, Typography, message } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import DaumPostcode from "react-daum-postcode";
 import Modal from "react-modal";
 import logger from "../utils/logger";
-import { useAppJoin } from "../hooks/useApi";
+import {
+  useAppEmailCheck,
+  useAppJoin,
+  useAppPhoneCheck,
+} from "../hooks/useApi";
 import { useNavigate } from "react-router-dom";
+import { theme } from "../utils/theme";
+import type { JoinData } from "../types";
 
 const { Text } = Typography;
 
@@ -26,18 +32,24 @@ const Section = styled.section`
   margin-bottom: 25px;
 `;
 
-const SignupButton = styled(Button)<{ disabled: boolean }>`
+const JoinTitle = styled(Text)`
+  font-weight: 700;
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+`;
+
+const SignupButton = styled(Button)`
   width: 100%;
   padding: 5px;
-  border-radius: 50px !important;
-  background-color: ${({ disabled }) =>
-    disabled ? "#ccc" : "#00b375"} !important;
+  border-radius: 6px !important;
+  background-color: ${theme.colors.primary} !important;
   color: #fefefe !important;
   border: none !important;
 
   &:hover {
-    background-color: ${({ disabled }) =>
-      disabled ? "#ccc" : "#00a366"} !important;
+    background-color: ${theme.colors.primary} !important;
     color: #fefefe !important;
   }
 `;
@@ -52,6 +64,14 @@ const JoinBoxStyle = styled.div`
   flex-direction: column;
   margin-bottom: 10px;
   position: relative;
+
+  input,
+  .ant-input-affix-wrapper,
+  .ant-input-password {
+    border-radius: 6px;
+    border: 1px solid ${theme.colors.inputBorder};
+    background-color: ${theme.colors.input} !important;
+  }
 `;
 
 const JoinLayOut = styled.div`
@@ -66,33 +86,28 @@ const JoinLayOut = styled.div`
   }
 `;
 
-const TermsBox = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+const InputLabel = styled(Text)`
+  font-weight: 300;
+  font-size: 14px;
+  display: block;
 `;
 
-const ViewButton = styled.button`
-  background: transparent;
-  border: none;
-  color: #00b375;
-  cursor: pointer;
-  font-size: 0.875rem;
-
-  &:hover {
-    text-decoration: underline;
-  }
+const InputSectionLabel = styled(Text)`
+  font-weight: 400;
+  font-size: 16px;
+  display: block;
+  margin-bottom: 5px;
 `;
 
 const PostcodeButton = styled.button`
   position: absolute;
   right: 5px;
-  top: 16px;
+  top: 15px;
   transform: translateY(-50%);
   background: transparent;
   border: none;
   cursor: pointer;
-  color: #00b375;
+  color: ${theme.colors.primary};
 `;
 
 const PhoneAuthButton = styled.button`
@@ -103,7 +118,7 @@ const PhoneAuthButton = styled.button`
   background: transparent;
   border: none;
   cursor: pointer;
-  color: #00b375;
+  color: ${theme.colors.primary};
   &:disabled {
     cursor: not-allowed;
     opacity: 0.6;
@@ -138,7 +153,7 @@ const SuccessIcon = styled.div`
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background-color: #00b375;
+  background-color: ${theme.colors.primary};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -165,70 +180,60 @@ const SuccessMessage = styled(Text)`
 const ConfirmButton = styled(Button)`
   width: 120px;
   height: 40px;
-  background-color: #00b375 !important;
-  border-color: #00b375 !important;
+  background-color: ${theme.colors.primary} !important;
+  border-color: ${theme.colors.primary} !important;
   color: white !important;
   border-radius: 20px !important;
   font-weight: 500;
 
   &:hover {
-    background-color: #00a366 !important;
-    border-color: #00a366 !important;
+    background-color: ${theme.colors.primary} !important;
+    border-color: ${theme.colors.primary} !important;
     color: white !important;
   }
 `;
 
-const RequiredMark = styled.span`
-  color: #ad2d2d;
-`;
-
 const JoinPage: React.FC = () => {
-  const {
-    handleSubmit,
-    control,
-    setValue,
-    formState: { isValid },
-  } = useForm<any>({
+  const { handleSubmit, control, setValue, getValues, watch } = useForm<any>({
     mode: "onChange",
   });
   const navigate = useNavigate();
 
-  const [termsAccepted, setTermsAccepted] = useState(false);
-  const [serviceTermsAccepted, setServiceTermsAccepted] = useState(false);
-  const [privacyTermsAccepted, setPrivacyTermsAccepted] = useState(false);
   const [postcodeModalOpen, setPostcodeModalOpen] = useState(false);
-  const [isIdAuthenticated, setIsIdAuthenticated] = useState(false);
-  const [isPhoneAuthenticated, setIsPhoneAuthenticated] = useState(false);
+  // 이메일 중복확인 상태
+  const [isEmailCheckPending, setIsEmailCheckPending] = useState(false);
+  // 휴대폰 중복확인 상태
+  const [isPhoneCheckPending, setIsPhoneCheckPending] = useState(false);
 
   // 회원가입 성공 모달
   const [isJoinSuccessOpen, setIsJoinSuccessOpen] = useState(false);
 
-  const handleIdAuth = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setIsIdAuthenticated(true);
-  };
+  // 폼 값들을 실시간으로 감시
+  const emailValue = watch("email");
+  const handphoneValue = watch("handphone");
 
-  const handlePhoneAuth = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setIsPhoneAuthenticated(true);
+  // const handlePhoneAuth = (event: React.MouseEvent<HTMLButtonElement>) => {
+  //   setIsPhoneAuthenticated(true);
 
-    // todo : 휴대폰 인증 로직 추가
-    // event.preventDefault();
-    // event.stopPropagation();
-    // if (!isEmailConfirmed) {
-    //   setModalMessageTwo("먼저 아이디 인증을 진행해주세요.");
-    //   setIsModalOpenTwo(true);
-    //   return;
-    // }
-    // const { IMP } = window;
-    // IMP.init(import.meta.env.VITE_IMP_ID_CODE);
-    // const data = {
-    //   merchant_uid: `mid_${new Date().getTime()}`, // 주문번호
-    //   company: "카본업슈", // 회사명 또는 URL
-    //   phone: getValues("handphone"), // 사용자 전화번호
-    //   name: getValues("name"), // 사용자 이름
-    // };
-    // console.log("휴대폰인증 데이터", data);
-    // IMP.certification(data, callback);
-  };
+  //   todo : 휴대폰 인증 로직 추가
+  //   event.preventDefault();
+  //   event.stopPropagation();
+  //   if (!isEmailConfirmed) {
+  //     setModalMessageTwo("먼저 아이디 인증을 진행해주세요.");
+  //     setIsModalOpenTwo(true);
+  //     return;
+  //   }
+  //   const { IMP } = window;
+  //   IMP.init(import.meta.env.VITE_IMP_ID_CODE);
+  //   const data = {
+  //     merchant_uid: `mid_${new Date().getTime()}`, // 주문번호
+  //     company: "오클러", // 회사명 또는 URL
+  //     phone: getValues("handphone"), // 사용자 전화번호
+  //     name: getValues("name"), // 사용자 이름
+  //   };
+  //   console.log("휴대폰인증 데이터", data);
+  //   IMP.certification(data, callback);
+  // };
 
   // todo : 휴대폰 인증 콜백 핸들러 추가
   // const callback = (response: any) => {
@@ -244,36 +249,103 @@ const JoinPage: React.FC = () => {
   //   }
   // };
 
-  // todo : 약관 동의 모달 추가
-  const handleViewTerms = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
-    event.preventDefault();
+  // 이메일 중복확인
+  const { mutate: m_app_email_check } = useAppEmailCheck();
+
+  // 이메일 중복확인 버튼 클릭 시
+  // 이메일 중복확인 성공 시 isEmailCheckPending 상태 변경
+  // 이메일 중복확인 실패 시 에러 메시지 표시
+  // 이메일 중복확인 누르고 api 호출이 끝나고나서 에러메세지 여부 표시
+  const handleEmailCheck = () => {
+    m_app_email_check(
+      { userid: getValues("email") },
+      {
+        onSuccess: (response) => {
+          if (response.data?.resObject?.rsp_code === "100") {
+            setIsEmailCheckPending(true);
+          } else {
+            const errorMessage =
+              response.data?.rsp_msg || "이메일 중복확인에 실패했습니다.";
+            message.error(errorMessage);
+          }
+        },
+        onError: (error) => {
+          logger.log("============ >>>>>> 이메일 중복확인 실패 -", error);
+        },
+      }
+    );
   };
 
-  // todo : 개인정보 동의 모달 추가
-  const handleViewPrivacy = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
-    event.preventDefault();
+  // 휴대폰 중복확인
+  const { mutate: m_app_phone_check } = useAppPhoneCheck();
+
+  // 휴대폰 중복확인 버튼 클릭 시
+  // 휴대폰 중복확인 성공 시 isPhoneCheckPending 상태 변경
+  // 휴대폰 중복확인 실패 시 에러 메시지 표시
+  // 휴대폰 중복확인 누르고 api 호출이 끝나고나서 에러메세지 여부 표시
+  const handlePhoneCheck = () => {
+    m_app_phone_check(
+      { handphone: getValues("handphone") },
+      {
+        onSuccess: (response) => {
+          logger.log("============ >>>>>> 휴대폰 중복확인 성공 -", response);
+          if (response.data?.resObject?.rsp_code === "100") {
+            setIsPhoneCheckPending(true);
+          } else {
+            const errorMessage =
+              response.data?.rsp_msg || "휴대폰 중복확인에 실패했습니다.";
+            message.error(errorMessage);
+          }
+        },
+      }
+    );
   };
 
-  const { mutate: m_app_join } = useAppJoin();
+  const { mutate: m_app_join, isPending } = useAppJoin();
 
-  // todo : 회원가입 버튼 핸들러 추가
-  const onSubmit = async (data: any) => {
+  // join_type : e - 이메일, k - 카카오, n - 네이버, g - 구글,
+  // c_gb : 회원유형 (c : 개인 - 현재는 개인만 가입가능)
+  // uniq_key : 간편가입 구분키 (카카오, 네이버, 구글 간편가입 시 사용)
+  const onSubmit = async (data: JoinData) => {
     logger.log("============ >>>>>> 회원가입 데이터 -", data);
     m_app_join(
       {
-        username: data.name,
-        email: data.email,
+        userid: data.userid,
         password: data.password,
+        handphone: data.handphone,
+        name: data.name,
+        join_type: "e",
+        uniq_key: "",
+        c_gb: "c",
+        token: "",
+        add1: data.add1,
+        add2: data.add2,
+        zip: data.zip,
       },
       {
-        onSuccess: () => {
+        onSuccess: (response) => {
           logger.log("============ >>>>>> 회원가입 성공 <<<<<< =============");
-          setIsJoinSuccessOpen(true);
+
+          // rsp_code에 따른 예외처리
+          if (response.data?.rsp_code === "100") {
+            setIsJoinSuccessOpen(true);
+          } else {
+            const errorMessage =
+              response.data?.rsp_msg || "회원가입에 실패했습니다.";
+            message.error(errorMessage);
+          }
         },
-        onError: (error) => {
+        onError: (error: any) => {
           logger.log("============ >>>>>> 회원가입 실패 -", error);
+
+          // API 에러 응답 처리
+          if (error.response?.data?.rsp_code) {
+            const errorMessage =
+              error.response.data.rsp_msg || "회원가입에 실패했습니다.";
+            message.error(errorMessage);
+          } else {
+            message.error("네트워크 오류가 발생했습니다. 다시 시도해주세요.");
+          }
         },
       }
     );
@@ -298,77 +370,11 @@ const JoinPage: React.FC = () => {
 
   return (
     <Container>
+      <JoinTitle>회원가입</JoinTitle>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Section>
-          <Text
-            style={{
-              fontWeight: "600",
-              marginBottom: "10px",
-              fontSize: "18px",
-              display: "block",
-            }}
-          >
-            아이디 및 비밀번호
-          </Text>
           <JoinBox>
-            <Text
-              style={{
-                fontWeight: "300",
-                fontSize: "14px",
-                display: "block",
-              }}
-            >
-              아이디 <RequiredMark>*</RequiredMark>
-            </Text>
-            <JoinBoxStyle>
-              <Controller
-                name="id"
-                control={control}
-                defaultValue=""
-                disabled={isIdAuthenticated}
-                rules={{
-                  required: "아이디를 입력해주세요.",
-                  minLength: {
-                    value: 6,
-                    message: "아이디는 6자 이상 입력해주세요.",
-                  },
-                }}
-                render={({ field }) => (
-                  <Input
-                    placeholder="아이디를 입력해주세요."
-                    inputMode="text"
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter") {
-                        event.preventDefault();
-                      }
-                    }}
-                    {...field}
-                  />
-                )}
-              />
-              <PhoneAuthButton
-                onClick={handleIdAuth}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                  }
-                }}
-                disabled={isIdAuthenticated}
-              >
-                {isIdAuthenticated ? "인증 완료" : "아이디 인증"}
-              </PhoneAuthButton>
-            </JoinBoxStyle>
-          </JoinBox>
-          <JoinBox>
-            <Text
-              style={{
-                fontWeight: "300",
-                fontSize: "14px",
-                display: "block",
-              }}
-            >
-              이메일 <RequiredMark>*</RequiredMark>
-            </Text>
+            <InputLabel>이메일</InputLabel>
             <JoinBoxStyle>
               <Controller
                 name="email"
@@ -391,24 +397,31 @@ const JoinPage: React.FC = () => {
                       }
                     }}
                     {...field}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      // 이메일이 변경되면 인증 상태 초기화
+                      if (isEmailCheckPending) {
+                        setIsEmailCheckPending(false);
+                      }
+                    }}
                   />
                 )}
               />
-              {/* <EmailButton onClick={idConfirm} disabled={isEmailConfirmed}>
-                중복확인
-              </EmailButton> */}
+              <PhoneAuthButton
+                onClick={handleEmailCheck}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                  }
+                }}
+                disabled={isEmailCheckPending || !emailValue?.trim()}
+              >
+                {isEmailCheckPending ? "인증 완료" : "이메일 인증"}
+              </PhoneAuthButton>
             </JoinBoxStyle>
           </JoinBox>
           <JoinBox>
-            <Text
-              style={{
-                fontWeight: "300",
-                fontSize: "14px",
-                display: "block",
-              }}
-            >
-              비밀번호 <RequiredMark>*</RequiredMark>
-            </Text>
+            <InputLabel>비밀번호</InputLabel>
             <JoinBoxStyle>
               <Controller
                 name="password"
@@ -437,26 +450,9 @@ const JoinPage: React.FC = () => {
           </JoinBox>
         </Section>
         <Section>
-          <Text
-            style={{
-              fontWeight: "600",
-              marginBottom: "10px",
-              fontSize: "18px",
-              display: "block",
-            }}
-          >
-            기본 정보
-          </Text>
+          <InputSectionLabel>기본 정보</InputSectionLabel>
           <JoinBox>
-            <Text
-              style={{
-                fontWeight: "300",
-                fontSize: "14px",
-                display: "block",
-              }}
-            >
-              이름 <RequiredMark>*</RequiredMark>
-            </Text>
+            <InputLabel>이름</InputLabel>
             <JoinBoxStyle>
               <Controller
                 name="name"
@@ -478,15 +474,7 @@ const JoinPage: React.FC = () => {
             </JoinBoxStyle>
           </JoinBox>
           <JoinBox>
-            <Text
-              style={{
-                fontWeight: "300",
-                fontSize: "14px",
-                display: "block",
-              }}
-            >
-              휴대폰 번호 <RequiredMark>*</RequiredMark>
-            </Text>
+            <InputLabel>휴대폰 번호</InputLabel>
             <JoinBoxStyle>
               <Controller
                 name="handphone"
@@ -515,35 +503,30 @@ const JoinPage: React.FC = () => {
                       }
                     }}
                     {...field}
-                    disabled={isPhoneAuthenticated}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      // 휴대폰번호가 변경되면 인증 상태 초기화
+                      if (isPhoneCheckPending) {
+                        setIsPhoneCheckPending(false);
+                      }
+                    }}
                   />
                 )}
               />
               <PhoneAuthButton
-                onClick={handlePhoneAuth}
+                onClick={handlePhoneCheck}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
                   }
                 }}
-                disabled={
-                  // !isEmailConfirmed ||
-                  isPhoneAuthenticated
-                }
+                disabled={isPhoneCheckPending || !handphoneValue?.trim()}
               >
-                {isPhoneAuthenticated ? "인증 완료" : "휴대폰 인증"}
+                {isPhoneCheckPending ? "인증 완료" : "휴대폰 인증"}
               </PhoneAuthButton>
             </JoinBoxStyle>
           </JoinBox>
-          <Text
-            style={{
-              fontWeight: "300",
-              fontSize: "14px",
-              display: "block",
-            }}
-          >
-            주소
-          </Text>
+          <InputLabel>주소</InputLabel>
 
           <JoinLayOut>
             <JoinBox>
@@ -630,58 +613,10 @@ const JoinPage: React.FC = () => {
           <DaumPostcode onComplete={handlePostcodeComplete} />
         </Modal>
 
-        <Section>
-          <Text
-            style={{
-              fontWeight: "600",
-              fontSize: "18px",
-              display: "block",
-            }}
-          >
-            약관 동의 <RequiredMark>*</RequiredMark>
-          </Text>
-          <Form.Item>
-            <Checkbox
-              checked={termsAccepted}
-              onChange={(e) => {
-                setTermsAccepted(e.target.checked);
-                setServiceTermsAccepted(e.target.checked);
-                setPrivacyTermsAccepted(e.target.checked);
-              }}
-            >
-              전체 동의합니다.
-            </Checkbox>
-            {/* {errors.termsAccepted && (
-              <Error>{errors.termsAccepted.message}</Error>
-            )} */}
-            <TermsBox>
-              <Checkbox
-                checked={serviceTermsAccepted}
-                onChange={(e) => {
-                  setServiceTermsAccepted(e.target.checked);
-                }}
-              >
-                [필수] 서비스 이용약관
-              </Checkbox>
-              <ViewButton onClick={handleViewTerms}>전체보기</ViewButton>
-            </TermsBox>
-            <TermsBox>
-              <Checkbox
-                checked={privacyTermsAccepted}
-                onChange={(e) => {
-                  setPrivacyTermsAccepted(e.target.checked);
-                }}
-              >
-                [필수] 개인정보 수집 및 이용
-              </Checkbox>
-              <ViewButton onClick={handleViewPrivacy}>전체보기</ViewButton>
-            </TermsBox>
-          </Form.Item>
-        </Section>
-
         <SignupButton
-          disabled={!isValid || !termsAccepted || !isPhoneAuthenticated}
           onClick={handleSubmit(onSubmit)}
+          loading={isPending}
+          disabled={isPending}
         >
           가입하기
         </SignupButton>

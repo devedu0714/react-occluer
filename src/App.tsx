@@ -8,6 +8,7 @@ import NoPage from "./pages/NoPage";
 import LoginPage from "./pages/LoginPage";
 import MyPage from "./pages/MyPage";
 import JoinPage from "./pages/JoinPage";
+import SearchPage from "./pages/SearchPage";
 
 const AppContainer = styled.div<{ theme: "light" | "dark" }>`
   min-height: 100vh;
@@ -36,6 +37,8 @@ function App() {
             <Route path="/myPage" element={<MyPage />} />
             {/* 회원가입 */}
             <Route path="/join" element={<JoinPage />} />
+            {/* 검색 */}
+            <Route path="/search" element={<SearchPage />} />
           </Routes>
         </Layout>
       </AppContainer>

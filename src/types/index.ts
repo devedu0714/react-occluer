@@ -46,3 +46,26 @@ export interface NavItem {
   label: string;
   icon?: string;
 }
+
+// 회원가입 타입
+export interface JoinData {
+  userid: string;
+  handphone: string;
+  password: string;
+  name: string;
+  join_type: string;
+  uniq_key: string;
+  c_gb: string;
+  token: string;
+  add1: string;
+  add2: string;
+  zip: string;
+}
+
+// 로그인 타입
+export interface LoginData {
+  userid: string;
+  password: string;
+  join_type?: string;
+  uniq_key?: string;
+}

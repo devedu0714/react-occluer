@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import KakaoLogo from "../assets/logo/kakao.svg";
 import GoogleLogo from "../assets/logo/google.svg";
 import AppleLogo from "../assets/logo/apple.svg";
+import { theme } from "../utils/theme";
 
 const LoginContainer = styled.div`
   padding: 0 25px;
@@ -21,7 +22,11 @@ const LoginContainer = styled.div`
 `;
 
 const Logo = styled.div`
-  margin: 24px 0 32px 0;
+  font-weight: 700;
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
 
   img {
     width: 200px;
@@ -43,7 +48,15 @@ const SocialLoginContainer = styled.div<{ isIOS: boolean }>`
 
 const LoginFormWrap = styled.div`
   width: 100%;
-  padding: 0 15px;
+  padding: 0 5px;
+
+  input,
+  .ant-input-affix-wrapper,
+  .ant-input-password {
+    border-radius: 6px;
+    border: 1px solid ${theme.colors.inputBorder};
+    background-color: ${theme.colors.input} !important;
+  }
 `;
 
 const SmallButton = styled(Button)`
@@ -57,11 +70,11 @@ const SmallButton = styled(Button)`
 
 const LoginButton = styled(Button)<{ disabled: boolean }>`
   width: 100% !important;
-  margin-top: 20px !important;
-  border-radius: 16px !important;
+  margin-top: 30px !important;
+  border-radius: 4px !important;
   font-size: 16px !important;
   background-color: ${(props) =>
-    props.disabled ? "#ccc" : "#00b375"} !important;
+    props.disabled ? "#ccc" : theme.colors.primary} !important;
 `;
 
 const StyledSocialButton = styled.button<{ backgroundColor: string }>`
@@ -96,10 +109,32 @@ const StyledSocialButton = styled.button<{ backgroundColor: string }>`
 // `;
 
 const HomeButton = styled(Button)`
-  font-size: 10px !important;
+  font-size: 12px !important;
   color: #777 !important;
   border: none !important;
+  border-radius: 0 !important;
   box-shadow: none !important;
+  width: fit-content !important;
+  margin: 0 auto !important;
+  text-decoration: underline !important;
+`;
+
+const InputLabel = styled.div`
+  text-align: left;
+  margin-bottom: 4px;
+`;
+
+const InputLabelText = styled.span`
+  font-size: 14px;
+  color: #777;
+`;
+
+const StyledInput = styled(Input)`
+  margin-bottom: 20px;
+`;
+
+const StyledPasswordInput = styled(Input.Password)`
+  margin-bottom: 0;
 `;
 
 const LoginPage = () => {
@@ -118,7 +153,7 @@ const LoginPage = () => {
     }
 
     login(
-      { email: id, password, easy_yn: "n", uniq_key: "", token: "" },
+      { userid: id, password, join_type: "e", uniq_key: "" },
       {
         onSuccess: (response) => {
           const data = response.data;
@@ -167,15 +202,20 @@ const LoginPage = () => {
         <p>오클러</p>
       </Logo>
       <LoginFormWrap>
-        <Input
-          placeholder="아이디"
+        <InputLabel>
+          <InputLabelText>아이디</InputLabelText>
+        </InputLabel>
+        <StyledInput
+          placeholder="아이디를 입력하세요"
           value={id}
           onChange={(e) => setId(e.target.value)}
           onPressEnter={loginHandler}
-          style={{ marginBottom: "10px" }}
         />
-        <Input.Password
-          placeholder="비밀번호"
+        <InputLabel>
+          <InputLabelText>비밀번호</InputLabelText>
+        </InputLabel>
+        <StyledPasswordInput
+          placeholder="비밀번호를 입력하세요"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           onPressEnter={loginHandler}

@@ -1,74 +1,17 @@
 import { useState, useEffect } from "react";
-import styled, { createGlobalStyle, keyframes } from "styled-components";
-import { Modal, Input, Button } from "antd";
-import MainContents from "./Main/MainContents";
+import styled from "styled-components";
+import { Button } from "antd";
+import MainContents from "../components/Main/MainContents";
 import { dummyData, dummySearch } from "../contexts/Dummy";
-import SearchContents from "./Search/SearchContents";
-import SearchDetailContents from "./Search/SearchDetailContents";
+import SearchContents from "../components/Search/SearchContents";
+import SearchDetailContents from "../components/Search/SearchDetailContents";
 
-const slideUp = keyframes`
-  from {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-`;
-
-const slideDown = keyframes`
-  from {
-    transform: translateY(0);
-    opacity: 1;
-  }
-  to {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-`;
-
-const GlobalStyle = createGlobalStyle<{ isClosing: boolean }>`
-  .ant-modal {
-    top: 5% !important;
-    padding-bottom: 10px;
-  }
-
-  .ant-modal-body {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-  }
-  
-  .ant-modal-content {
-    width: 100%;
-    height: 90vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    animation: ${({ isClosing }) =>
-      isClosing ? slideDown : slideUp} 0.3s ease-out forwards;
-  }
-  
-  .ant-modal-mask {
-    background-color: rgba(0, 0, 0, 0.5);
-  }
-  
-  .ant-modal-close {
-    top: 16px;
-    right: 16px;
-    color: #666;
-    
-    &:hover {
-      color: #333;
-    }
-  }
+const SearchModalContainer = styled.div`
+  width: 100%;
+  height: calc(100vh - 100px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const ModalTitle = styled.div`
@@ -78,7 +21,7 @@ const ModalTitle = styled.div`
   background-color: transparent;
   border: 1px solid #222;
   width: fit-content;
-  margin: 0 auto;
+  margin: 15px auto 0 auto;
   padding: 0 10px;
   border-radius: 5px;
   color: #222;
@@ -120,14 +63,7 @@ const CompleteButton = styled(Button)`
   justify-content: center;
 `;
 
-export const SearchModal = ({
-  open,
-  onCancel,
-}: {
-  open: boolean;
-  onCancel: () => void;
-}) => {
-  const [isClosing, setIsClosing] = useState(false);
+const SearchPage = () => {
   const [isPage, setIsPage] = useState(0);
 
   // 임시 컨텐츠 데이터 상태
@@ -140,22 +76,6 @@ export const SearchModal = ({
     setSearch(dummySearch);
   }, []);
 
-  // 모달 오픈 상태 변경 시 애니메이션 적용
-  useEffect(() => {
-    if (!open) {
-      setIsClosing(false);
-    }
-  }, [open]);
-
-  // 모달 닫기 핸들러
-  const handleCancel = () => {
-    setIsClosing(true);
-    setIsPage(0);
-    setTimeout(() => {
-      onCancel();
-    }, 300);
-  };
-
   // 페이지 핸들러
   const handleNext = () => {
     setIsPage(isPage + 1);
@@ -166,8 +86,7 @@ export const SearchModal = ({
   };
 
   return (
-    <Modal open={open} onCancel={handleCancel} footer={null} width="100%">
-      <GlobalStyle isClosing={isClosing} />
+    <SearchModalContainer>
       <ModalTitle>영업</ModalTitle>
       {isPage === 0 && (
         <>
@@ -202,6 +121,8 @@ export const SearchModal = ({
           <CompleteButton>완료</CompleteButton>
         </>
       )}
-    </Modal>
+    </SearchModalContainer>
   );
 };
+
+export default SearchPage;

@@ -1,9 +1,14 @@
 import styled from "styled-components";
 import { useAppStore } from "../store/useAppStore";
 import logger from "../utils/logger";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { SearchModal } from "./SearchModal";
+import { useNavigate, useLocation } from "react-router-dom";
+import {
+  HomeOutlined,
+  MenuOutlined,
+  SearchOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import { theme } from "../utils/theme";
 
 const LayoutContainer = styled.div`
   min-height: 100vh;
@@ -25,7 +30,7 @@ const BottomNav = styled.nav`
   right: 0;
   background-color: #ffffff;
   border-top: 1px solid #e0e0e0;
-  padding: 8px 0;
+  padding: 6px 0;
   z-index: 1000;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
 `;
@@ -48,9 +53,10 @@ const NavButton = styled.button<{ $active?: boolean }>`
   min-width: 60px;
   cursor: pointer;
   transition: all 0.2s ease;
-  color: ${(props) => (props.$active ? "#007bff" : "#666")};
+  color: ${(props) => (props.$active ? theme.colors.primary : "#666")};
   font-size: 12px;
   font-weight: ${(props) => (props.$active ? "600" : "400")};
+  outline: none;
 
   &:hover {
     color: #007bff;
@@ -59,15 +65,21 @@ const NavButton = styled.button<{ $active?: boolean }>`
   .icon {
     font-size: 20px;
     margin-bottom: 4px;
+    color: ${(props) => (props.$active ? theme.colors.primary : "#666")};
   }
 `;
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
-  const { theme, toggleTheme, isLoggedIn } = useAppStore();
+  const location = useLocation();
+  const { isLoggedIn, isMenuOpen } = useAppStore();
 
-  // 검색 모달 오픈 상태
-  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  // 현재 경로에 따른 활성화 상태 확인
+  const isHomeActive = location.pathname === "/";
+  const isSearchActive = location.pathname === "/search";
+  const isMenuActive = isMenuOpen;
+  const isProfileActive =
+    location.pathname === "/myPage" || location.pathname === "/login";
 
   // 네비게이션 기능 추가 예정
   const homeHandler = () => {
@@ -75,7 +87,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   };
 
   const searchHandler = () => {
-    setIsSearchModalOpen(true);
+    navigate("/search");
   };
 
   const addHandler = () => {
@@ -100,21 +112,32 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
       <BottomNav>
         <NavContainer>
-          <NavButton onClick={homeHandler}>🏠</NavButton>
-          <NavButton onClick={searchHandler}>🔍</NavButton>
-          <NavButton onClick={addHandler}>➕</NavButton>
-          <NavButton onClick={toggleTheme}>
-            {theme === "light" ? "🌙" : "☀️"}
+          <NavButton onClick={homeHandler} $active={isHomeActive}>
+            <HomeOutlined
+              className="icon"
+              style={{ color: isHomeActive ? theme.colors.primary : "#666" }}
+            />
           </NavButton>
-          <NavButton onClick={profileHandler}>👤</NavButton>
+          <NavButton onClick={searchHandler} $active={isSearchActive}>
+            <SearchOutlined
+              className="icon"
+              style={{ color: isSearchActive ? theme.colors.primary : "#666" }}
+            />
+          </NavButton>
+          <NavButton onClick={addHandler} $active={isMenuActive}>
+            <MenuOutlined
+              className="icon"
+              style={{ color: isMenuActive ? theme.colors.primary : "#666" }}
+            />
+          </NavButton>
+          <NavButton onClick={profileHandler} $active={isProfileActive}>
+            <UserOutlined
+              className="icon"
+              style={{ color: isProfileActive ? theme.colors.primary : "#666" }}
+            />
+          </NavButton>
         </NavContainer>
       </BottomNav>
-
-      {/* 검색 모달 */}
-      <SearchModal
-        open={isSearchModalOpen}
-        onCancel={() => setIsSearchModalOpen(false)}
-      />
     </LayoutContainer>
   );
 };

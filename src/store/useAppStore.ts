@@ -10,6 +10,7 @@ interface AppState {
   theme: "light" | "dark";
   isLoggedIn: boolean;
   user: any | null;
+  isMenuOpen: boolean;
 
   // 액션
   setLoading: (loading: boolean) => void;
@@ -17,6 +18,7 @@ interface AppState {
   setTheme: (theme: "light" | "dark") => void;
   setLogin: (isLoggedIn: boolean, user?: any) => void;
   logout: () => void;
+  setMenuOpen: (isMenuOpen: boolean) => void;
 }
 
 // localStorage에서 초기값 가져오기
@@ -30,6 +32,7 @@ const getInitialState = () => {
         theme: parsed.state?.theme || "light",
         isLoggedIn: parsed.state?.isLoggedIn || false,
         user: parsed.state?.user || null,
+        isMenuOpen: parsed.state?.isMenuOpen || false,
       };
     }
   } catch (error) {
@@ -41,6 +44,7 @@ const getInitialState = () => {
     theme: "light",
     isLoggedIn: false,
     user: null,
+    isMenuOpen: false,
   };
 };
 
@@ -74,6 +78,7 @@ export const useAppStore = create<AppState>()(
         localStorage.removeItem("user");
         localStorage.removeItem("accessToken");
       },
+      setMenuOpen: (isMenuOpen) => set({ isMenuOpen }),
     }),
     {
       name: "app-store", // localStorage 키 이름
@@ -83,6 +88,7 @@ export const useAppStore = create<AppState>()(
         theme: state.theme,
         isLoggedIn: state.isLoggedIn,
         user: state.user,
+        isMenuOpen: state.isMenuOpen,
       }),
     }
   )
