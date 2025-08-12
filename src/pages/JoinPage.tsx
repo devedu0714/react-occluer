@@ -258,7 +258,7 @@ const JoinPage: React.FC = () => {
   // 이메일 중복확인 누르고 api 호출이 끝나고나서 에러메세지 여부 표시
   const handleEmailCheck = () => {
     m_app_email_check(
-      { userid: getValues("email") },
+      { email: getValues("email") },
       {
         onSuccess: (response) => {
           if (response.data?.resObject?.rsp_code === "100") {
@@ -310,7 +310,7 @@ const JoinPage: React.FC = () => {
     logger.log("============ >>>>>> 회원가입 데이터 -", data);
     m_app_join(
       {
-        userid: data.userid,
+        email: data.email,
         password: data.password,
         handphone: data.handphone,
         name: data.name,
@@ -324,10 +324,11 @@ const JoinPage: React.FC = () => {
       },
       {
         onSuccess: (response) => {
-          logger.log("============ >>>>>> 회원가입 성공 <<<<<< =============");
-
           // rsp_code에 따른 예외처리
-          if (response.data?.rsp_code === "100") {
+          if (response.data?.resObject?.rsp_code === "100") {
+            logger.log(
+              "============ >>>>>> 회원가입 성공 <<<<<< ============="
+            );
             setIsJoinSuccessOpen(true);
           } else {
             const errorMessage =
@@ -408,10 +409,15 @@ const JoinPage: React.FC = () => {
                 )}
               />
               <PhoneAuthButton
-                onClick={handleEmailCheck}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleEmailCheck();
+                }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
+                    e.stopPropagation();
                   }
                 }}
                 disabled={isEmailCheckPending || !emailValue?.trim()}
@@ -514,10 +520,15 @@ const JoinPage: React.FC = () => {
                 )}
               />
               <PhoneAuthButton
-                onClick={handlePhoneCheck}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handlePhoneCheck();
+                }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
+                    e.stopPropagation();
                   }
                 }}
                 disabled={isPhoneCheckPending || !handphoneValue?.trim()}
@@ -547,8 +558,8 @@ const JoinPage: React.FC = () => {
                       suffix={
                         <PostcodeButton
                           onClick={(event) => {
-                            event.stopPropagation();
                             event.preventDefault();
+                            event.stopPropagation();
                             setPostcodeModalOpen(true);
                           }}
                         >

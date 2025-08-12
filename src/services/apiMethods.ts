@@ -38,18 +38,17 @@ export function _fakeReq(methodName: string, data?: any) {
 
 // 로그인 API 함수
 export const m_app_login = (data: {
-  userid: string;
+  email: string;
   password: string;
   join_type?: string;
   uniq_key?: string;
 }) => {
-  logger.log("============ >>>>>> 로그인 요청 -", JSON.stringify(data));
   return _httpReq("m_app_login", data);
 };
 
 // 회원가입 API 함수
 export const m_app_join = (data: {
-  userid: string;
+  email: string;
   handphone: string;
   password: string;
   name: string;
@@ -61,12 +60,11 @@ export const m_app_join = (data: {
   add2: string;
   zip: string;
 }) => {
-  logger.log("============ >>>>>> 회원가입 요청 -", JSON.stringify(data));
   return _httpReq("m_app_join", data);
 };
 
 // 이메일 중복확인 API 함수
-export const m_app_email_check = (data: { userid: string }) => {
+export const m_app_email_check = (data: { email: string }) => {
   logger.log(
     "============ >>>>>> 이메일 중복확인 요청 -",
     JSON.stringify(data)
@@ -76,10 +74,6 @@ export const m_app_email_check = (data: { userid: string }) => {
 
 // 휴대폰 중복확인 API 함수
 export const m_app_handphone_check = (data: { handphone: string }) => {
-  logger.log(
-    "============ >>>>>> 휴대폰 중복확인 요청 -",
-    JSON.stringify(data)
-  );
   return _httpReq("m_app_handphone_check", data);
 };
 
@@ -88,9 +82,5 @@ export const m_app_easy_check = (data: {
   join_type: string;
   uniq_key: string;
 }) => {
-  logger.log(
-    "============ >>>>>> 간편로그인으로 가입되어 있는지 체크 요청 -",
-    JSON.stringify(data)
-  );
   return _httpReq("m_app_join_check", data);
 };

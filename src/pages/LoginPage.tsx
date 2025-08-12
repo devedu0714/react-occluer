@@ -153,15 +153,19 @@ const LoginPage = () => {
     }
 
     login(
-      { userid: id, password, join_type: "e", uniq_key: "" },
+      { email: id, password, join_type: "e", uniq_key: "" },
       {
         onSuccess: (response) => {
           const data = response.data;
-          message.success("로그인 성공!");
-          setLogin(true, data);
-          logger.log("로그인 성공!");
-          // 로그인 성공 후 홈페이지로 이동
-          navigate("/");
+          if (data.resObject.rsp_code === "100") {
+            message.success("로그인 성공!");
+            setLogin(true, data);
+            logger.log("로그인 성공!");
+            // 로그인 성공 후 홈페이지로 이동
+            navigate("/");
+          } else {
+            message.error(data.resObject.rsp_msg || "로그인에 실패했습니다.");
+          }
         },
         onError: (error: any) => {
           message.error("로그인에 실패했습니다. 다시 시도해주세요.");

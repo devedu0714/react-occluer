@@ -8,5 +8,9 @@ export const theme = {
     inputText: "#777",
     inputPlaceholder: "#777",
     red: "#ad2d2d",
+    white: "#ffffff",
+    black: "#000000",
+    semiWhite: "#f2f2f2",
+    semiBlack: "#222",
   },
 };

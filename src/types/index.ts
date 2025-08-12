@@ -1,4 +1,5 @@
 // API 응답 타입
+import { useAppEmailCheck } from "../hooks/useApi";
 export interface ApiResponse<T> {
   data: T;
   status: number;
@@ -49,7 +50,7 @@ export interface NavItem {
 
 // 회원가입 타입
 export interface JoinData {
-  userid: string;
+  email: string;
   handphone: string;
   password: string;
   name: string;
