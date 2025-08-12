@@ -9,18 +9,20 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { theme } from "../utils/theme";
+import HeaderSection from "./Main/HeaderSection";
 
 const LayoutContainer = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding-bottom: 50px;
 `;
 
-const Main = styled.main`
+const Main = styled.main<{ $isHeaderVisible: boolean }>`
   flex: 1;
   width: 100%;
-  max-width: 100%;
+  max-width: 400px;
+  margin: ${(props) =>
+    props.$isHeaderVisible ? "50px auto 53px auto" : "0 auto 53px auto"};
 `;
 
 const BottomNav = styled.nav`
@@ -39,7 +41,8 @@ const NavContainer = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: center;
-  max-width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
 `;
 
 const NavButton = styled.button<{ $active?: boolean }>`
@@ -106,9 +109,14 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  // 헤더 영역 표시 여부 확인
+  const isHeaderVisible =
+    location.pathname === "/" || location.pathname === "/myPage";
+
   return (
     <LayoutContainer>
-      <Main>{children}</Main>
+      <HeaderSection isVisible={isHeaderVisible} />
+      <Main $isHeaderVisible={isHeaderVisible}>{children}</Main>
 
       <BottomNav>
         <NavContainer>

@@ -64,8 +64,13 @@ const UserInfoSection = styled.div`
 const UserNameRow = styled.div`
   display: flex;
   align-items: center;
-  justify-content: start;
+  justify-content: space-between;
   gap: 10px;
+
+  div {
+    display: flex;
+    gap: 10px;
+  }
 `;
 
 const UserInfoRow = styled.div`
@@ -139,8 +144,8 @@ const PointsAmount = styled(Text)`
 
 interface UserProfileProps {
   user: {
-    id: string;
-    nickname: string;
+    u_id: string;
+    name: string;
     level: number;
     exp: number;
     maxExp: number;
@@ -151,6 +156,7 @@ interface UserProfileProps {
   onNicknameChange?: () => void;
   onPointsHistory?: () => void;
   onGiftCertificate?: () => void;
+  onLogout?: () => void;
 }
 
 const UserProfile: React.FC<UserProfileProps> = ({
@@ -159,6 +165,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
   onNicknameChange,
   onPointsHistory,
   onGiftCertificate,
+  onLogout,
 }) => {
   const progressPercentage = (user.exp / user.maxExp) * 100;
 
@@ -169,7 +176,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
           {user.avatar ? (
             <img src={user.avatar} alt="User Avatar" />
           ) : (
-            user.nickname.charAt(0)
+            user.name.charAt(0)
           )}
         </Avatar>
         <ChangeLink onClick={onAvatarChange}>변경</ChangeLink>
@@ -177,10 +184,11 @@ const UserProfile: React.FC<UserProfileProps> = ({
 
       <UserInfoSection>
         <UserNameRow>
-          <UserId>
-            {user.id} {user.nickname}
-          </UserId>
-          <ChangeLink onClick={onNicknameChange}>변경</ChangeLink>
+          <UserId>{user.name}</UserId>
+          <div>
+            <ChangeLink onClick={onNicknameChange}>변경</ChangeLink>
+            <ChangeLink onClick={onLogout}>로그아웃</ChangeLink>
+          </div>
         </UserNameRow>
         <UserInfoRow>
           <LevelSection>

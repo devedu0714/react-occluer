@@ -1,97 +1,53 @@
 import styled from "styled-components";
-import Blog from "../../assets/logo/blog.png";
-import Insta from "../../assets/logo/instagram.png";
-import { Button, Input } from "antd";
+import { BellOutlined } from "@ant-design/icons";
+import { theme } from "../../utils/theme";
 
-const HeaderContainer = styled.div`
-  width: 100%;
-  padding: 5px 10px;
+const HeaderContainer = styled.div<{ $isVisible: boolean }>`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: ${theme.colors.white};
+  padding: 10px 20px;
   display: flex;
+  visibility: ${({ $isVisible }) => ($isVisible ? "visible" : "hidden")};
   justify-content: space-between;
   align-items: center;
-  gap: 20px;
-  background-color: #ffffff;
   border-bottom: 1px solid #f0f0f0;
 `;
 
-const ImageWrap = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  flex-shrink: 0;
-`;
-
-const LogoImg = styled.img`
-  width: 45px;
-  height: 45px;
-  border-radius: 8px;
-  transition: transform 0.2s ease;
-  cursor: pointer;
-
-  &:hover {
-    transform: scale(1.05);
-  }
-`;
-
-const SearchWrap = styled.div`
-  flex: 1;
-  max-width: 500px;
-  display: flex;
-  align-items: center;
-  gap: 0;
+const HeaderWrap = styled.div`
+  width: 100%;
+  max-width: 400px;
   margin: 0 auto;
-
-  .ant-input-affix-wrapper {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border-color: #d9d9d9;
-    font-size: 14px;
-    height: 35px;
-
-    &:hover,
-    &:focus {
-      border-color: #1890ff;
-    }
-  }
-
-  .ant-btn {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    height: 35px;
-    padding: 0 10px;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-
-    &:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
-    }
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
-const HeaderSection = () => {
-  // todo : 인스타그램, 네이버 블로그 열기 기능 추가
+const Logo = styled.h1`
+  font-size: 16px;
+  font-weight: bold;
+  color: ${theme.colors.semiBlack};
+  margin: 0;
+`;
 
-  // todo : 검색 핸들러 및 API 함수 추가
+const NotificationIcon = styled.div`
+  font-size: 20px;
+  color: #666;
+  cursor: pointer;
+`;
 
+const HeaderSection = ({ isVisible }: { isVisible: boolean }) => {
   return (
-    <HeaderContainer>
-      <ImageWrap>
-        <LogoImg src={Insta} alt="instagram" />
-        <LogoImg src={Blog} alt="blog" />
-      </ImageWrap>
-      <SearchWrap>
-        <Input
-          type="text"
-          placeholder="검색어를 입력해주세요"
-          allowClear
-          size="large"
-        />
-        <Button type="primary" size="large">
-          검색
-        </Button>
-      </SearchWrap>
+    <HeaderContainer $isVisible={isVisible}>
+      <HeaderWrap>
+        <Logo>오클러</Logo>
+        <NotificationIcon>
+          <BellOutlined />
+        </NotificationIcon>
+      </HeaderWrap>
     </HeaderContainer>
   );
 };

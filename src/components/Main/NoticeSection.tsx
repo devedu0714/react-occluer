@@ -1,73 +1,68 @@
 import styled from "styled-components";
+import { theme } from "../../utils/theme";
 
 const NoticeSectionContainer = styled.div`
-  width: 100%;
-  height: auto;
-  background-color: #fff;
+  padding: 10px 20px;
 `;
 
-const NoticeSectionTitle = styled.div`
-  font-size: 16px;
-  font-weight: 500;
-  color: #000;
-  text-align: start;
-  padding: 0px 15px 5px 15px;
+const NoticeTitle = styled.h3`
+  font-size: 22px;
+  font-weight: bold;
+
+  text-align: left;
 `;
 
-const NoticeSectionContents = styled.div`
-  width: 100%;
-  height: auto;
-  background-color: #fff;
-`;
-
-const NoticeSectionItem = styled.div`
-  width: 100%;
-  height: auto;
-  background-color: #fff;
+const NoticeList = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+`;
+
+const NoticeItem = styled.div`
+  background: transparent;
+  padding: 5px 0;
+  border-radius: 8px;
+  text-align: left;
+  font-size: 12px;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 5px;
+
+  &:hover {
+    background: #e9ecef;
+  }
+
+  span {
+    line-height: 24px;
+  }
 `;
 
-const NoticeSectionItemContent = styled.div`
-  width: 75%;
+const NoticeItemNum = styled.span`
+  width: 30px;
+  height: 20px;
+  border-radius: 14px;
   font-size: 12px;
-  font-weight: 400;
-  color: #000;
-  text-align: start;
-  padding: 0 15px 0 0;
-  word-break: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
-
-const NoticeSectionItemDate = styled.div`
-  width: 25%;
-  font-size: 12px;
-  font-weight: 400;
-  color: #000;
-  text-align: start;
-  padding: 0 0 0 15px;
-  word-break: nowrap;
-  overflow: hidden;
-  text-overflow: clip;
-  white-space: nowrap;
+  color: #333;
+  background: ${theme.colors.white};
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const NoticeSection = ({ notice }: { notice: any[] }) => {
   return (
     <NoticeSectionContainer>
-      <NoticeSectionTitle>공지사항</NoticeSectionTitle>
-      <NoticeSectionContents>
-        {notice.map((item) => (
-          <NoticeSectionItem key={item.id}>
-            <NoticeSectionItemDate>{item.date}</NoticeSectionItemDate>
-            <NoticeSectionItemContent>{item.content}</NoticeSectionItemContent>
-          </NoticeSectionItem>
+      <NoticeTitle>공지사항</NoticeTitle>
+      <NoticeList>
+        {[1, 2, 3].map((num) => (
+          <NoticeItem key={num}>
+            <NoticeItemNum>{num}</NoticeItemNum>
+            <p>[필독] 업체를 등록했습니다</p>
+          </NoticeItem>
         ))}
-      </NoticeSectionContents>
+      </NoticeList>
     </NoticeSectionContainer>
   );
 };

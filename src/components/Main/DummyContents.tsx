@@ -51,9 +51,9 @@ const Badge = styled.div`
   background: ${theme.colors.primary};
   color: white;
   border-radius: 12px;
-  padding: 2px 10px;
+  padding: 2px 6px;
   font-size: 10px;
-  font-weight: 500;
+  font-weight: bold;
 `;
 
 const GridLabel = styled.div`
@@ -68,7 +68,7 @@ interface MainContentsProps {
   selectedItem?: string | null;
 }
 
-const MainContents = ({
+const DummyContents = ({
   contents,
   onItemSelect,
   selectedItem,
@@ -78,18 +78,15 @@ const MainContents = ({
       <GridContainer>
         {contents.map((item) => (
           <GridItem
-            key={item.add_no}
-            selected={selectedItem === item.add_no}
-            onClick={() => onItemSelect?.(item.add_no, item.gun)}
+            key={item.id}
+            selected={selectedItem === item.id}
+            onClick={() => onItemSelect?.(item.id, item.title)}
           >
-            <GridImage selected={selectedItem === item.add_no}>
-              <img
-                src={item.image || "https://picsum.photos/200/300"}
-                alt={item.gun}
-              />
-              <Badge>{item.cnt}</Badge>
+            <GridImage selected={selectedItem === item.id}>
+              <img src={item.image} alt={item.title} />
+              <Badge>{item.num}</Badge>
             </GridImage>
-            <GridLabel>{item.gun}</GridLabel>
+            <GridLabel>{item.title}</GridLabel>
           </GridItem>
         ))}
       </GridContainer>
@@ -97,4 +94,4 @@ const MainContents = ({
   );
 };
 
-export default MainContents;
+export default DummyContents;

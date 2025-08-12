@@ -11,7 +11,6 @@ import JoinPage from "./pages/JoinPage";
 import SearchPage from "./pages/SearchPage";
 
 const AppContainer = styled.div<{ theme: "light" | "dark" }>`
-  min-height: 100vh;
   background-color: ${(props) =>
     props.theme === "dark" ? "#1a1a1a" : "#ffffff"};
   color: ${(props) => (props.theme === "dark" ? "#ffffff" : "#000000")};

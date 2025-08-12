@@ -1,17 +1,17 @@
 import styled from "styled-components";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import MainBanner from "../components/Main/MainBanner";
-import HeaderSection from "../components/Main/HeaderSection";
-import MainContents from "../components/Main/MainContents";
 import { useEffect, useState } from "react";
 import { dummyData, dummyMD, dummyNotice } from "../contexts/Dummy";
+import MainBanner from "../components/Main/MainBanner";
+import SearchSection from "../components/Main/SearchSection";
+import MainContents from "../components/Main/MainContents";
 import MDSection from "../components/Main/MDSection";
 import NoticeSection from "../components/Main/NoticeSection";
+import { useAppHome } from "../hooks/useApi";
+import logger from "../utils/logger";
 
 const HomeContainer = styled.div`
-  text-align: center;
-  margin-bottom: 30px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
 `;
 
 const HomePage = () => {
@@ -24,8 +24,22 @@ const HomePage = () => {
   // 공지사항 데이터 상태
   const [notice, setNotice] = useState<any[]>([]);
 
-  // todo : 메인 컨텐츠 데이터 불러오기
-  // todo : 기획관 데이터 불러오기
+  const { mutate: homeContents } = useAppHome();
+
+  useEffect(() => {
+    homeContents(
+      {},
+      {
+        onSuccess: (response) => {
+          logger.log("============ >>>>>> 홈 컨텐츠 조회 성공 -", response);
+          if (response.data?.resObject?.rsp_code === "100") {
+            setContents(response.data?.resObject?.array);
+          }
+        },
+      }
+    );
+  }, [homeContents]);
+
   useEffect(() => {
     setContents(dummyData);
     setMd(dummyMD);
@@ -35,12 +49,9 @@ const HomePage = () => {
   return (
     <HomeContainer>
       <MainBanner />
-      <HeaderSection />
-      {/* 메인 컨텐츠 영역 */}
+      <SearchSection />
       <MainContents contents={contents} />
-      {/* 기획관 슬라이더 영역 */}
       <MDSection md={md} />
-      {/* 공지사항 영역 */}
       <NoticeSection notice={notice} />
     </HomeContainer>
   );

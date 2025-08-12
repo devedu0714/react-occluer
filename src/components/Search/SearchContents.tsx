@@ -12,20 +12,29 @@ const MainContentsContainer = styled.div`
   margin: 15px 0;
 `;
 
-const MainContentsItem = styled.div`
+const MainContentsItem = styled.div<{ selected?: boolean }>`
   width: 75px;
   height: 75px;
-  background-color: #000;
-  border-radius: 5px;
+  background-color: ${(props) => (props.selected ? "#f0f0f0" : "#000")};
+  border: ${(props) => (props.selected ? "3px solid #8B5CF6" : "none")};
+  border-radius: 50%;
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 `;
 
-const ContentsTitle = styled.div`
-  color: #fff;
+const ContentsTitle = styled.div<{ selected?: boolean }>`
+  color: ${(props) => (props.selected ? "#333" : "#fff")};
+  font-size: 12px;
+  text-align: center;
 `;
 
 const ContentsBadge = styled.div`
@@ -38,14 +47,30 @@ const ContentsBadge = styled.div`
   border-radius: 5px;
 `;
 
-const SearchContents = ({ contents }: { contents: any[] }) => {
+interface SearchContentsProps {
+  contents: any[];
+  onItemSelect?: (itemId: string) => void;
+  selectedItem?: string | null;
+}
+
+const SearchContents = ({
+  contents,
+  onItemSelect,
+  selectedItem,
+}: SearchContentsProps) => {
   return (
     <MainContentsContainer>
       {/* 한줄에 3개씩 컨텐츠 출력 */}
       {contents.map((item) => (
-        <MainContentsItem key={item.id}>
+        <MainContentsItem
+          key={item.id}
+          selected={selectedItem === item.title}
+          onClick={() => onItemSelect?.(item.title)}
+        >
           <ContentsBadge>{item.num}</ContentsBadge>
-          <ContentsTitle>{item.title}</ContentsTitle>
+          <ContentsTitle selected={selectedItem === item.title}>
+            {item.title}
+          </ContentsTitle>
         </MainContentsItem>
       ))}
     </MainContentsContainer>

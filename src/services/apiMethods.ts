@@ -84,3 +84,18 @@ export const m_app_easy_check = (data: {
 }) => {
   return _httpReq("m_app_join_check", data);
 };
+
+// 아이디 찾기
+export const m_app_id_search = (data: { name: string; handphone: string }) => {
+  return _httpReq("m_app_id_search", data);
+};
+
+// 비밀번호 찾기
+export const m_app_pwd_search = (data: { email: string }) => {
+  return _httpReq("m_app_pwd_search", data);
+};
+
+// 홈 컨텐츠 조회
+export const m_app_home = (data: {}) => {
+  return _httpReq("m_app_home", data);
+};

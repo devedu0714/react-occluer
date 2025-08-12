@@ -4,6 +4,9 @@ import {
   m_app_join,
   m_app_email_check,
   m_app_handphone_check,
+  m_app_id_search,
+  m_app_pwd_search,
+  m_app_home,
 } from "../services/apiMethods";
 import logger from "../utils/logger";
 
@@ -72,7 +75,7 @@ export const useAppJoin = () => {
   return useMutation({
     mutationFn: m_app_join,
     onSuccess: (response) => {
-      logger.log("============ >>>>>> 회원가입 성공 -", response);
+      logger.log("============ >>>>>> 회원가입 요청 -", response);
     },
   });
 };
@@ -93,6 +96,36 @@ export const useAppPhoneCheck = () => {
     mutationFn: m_app_handphone_check,
     onSuccess: (response) => {
       logger.log("============ >>>>>> 휴대폰 중복확인 성공 -", response);
+    },
+  });
+};
+
+// 아이디 찾기
+export const useAppIdSearch = () => {
+  return useMutation({
+    mutationFn: m_app_id_search,
+    onSuccess: (response) => {
+      logger.log("============ >>>>>> 아이디 찾기 요청 -", response);
+    },
+  });
+};
+
+// 비밀번호 찾기
+export const useAppPwdSearch = () => {
+  return useMutation({
+    mutationFn: m_app_pwd_search,
+    onSuccess: (response) => {
+      logger.log("============ >>>>>> 비밀번호 찾기 요청 -", response);
+    },
+  });
+};
+
+// 홈 컨텐츠 조회
+export const useAppHome = () => {
+  return useMutation({
+    mutationFn: m_app_home,
+    onSuccess: (response) => {
+      logger.log("============ >>>>>> 홈 컨텐츠 조회 요청 -", response);
     },
   });
 };

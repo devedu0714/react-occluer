@@ -23,8 +23,8 @@ const MyPage = () => {
 
   // 더미 사용자 데이터 (실제로는 API에서 가져올 데이터)
   const userData = {
-    id: "634532",
-    nickname: "빙수맛있어",
+    u_id: user?.resObject?.u_id,
+    name: user?.resObject?.name,
     level: 1,
     exp: 38,
     maxExp: 1000,
@@ -35,24 +35,9 @@ const MyPage = () => {
   // 메뉴 아이템 정의
   const menuItems = [
     {
-      id: "business",
+      id: "business-application",
       label: "업체신청",
-      subItems: [
-        {
-          id: "business-apply",
-          label: "업체 등록 신청",
-          onClick: () => {
-            message.info("업체 등록 신청 기능은 준비 중입니다.");
-          },
-        },
-        {
-          id: "business-status",
-          label: "신청 현황 조회",
-          onClick: () => {
-            message.info("신청 현황 조회 기능은 준비 중입니다.");
-          },
-        },
-      ],
+      subItems: [{}],
     },
     {
       id: "events",
@@ -244,6 +229,7 @@ const MyPage = () => {
           onNicknameChange={handleNicknameChange}
           onPointsHistory={handlePointsHistory}
           onGiftCertificate={handleGiftCertificate}
+          onLogout={logoutHandler}
         />
         <MenuList menuItems={menuItems} />
       </ContentWrapper>

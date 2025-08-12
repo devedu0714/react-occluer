@@ -75,3 +75,10 @@ export const classNames = (
 ): string => {
   return classes.filter(Boolean).join(" ");
 };
+
+// 비밀번호 형식 검증
+export const validatePassword = (password: string): boolean => {
+  const passwordRegex =
+    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  return passwordRegex.test(password);
+};

@@ -10,16 +10,9 @@ import KakaoLogo from "../assets/logo/kakao.svg";
 import GoogleLogo from "../assets/logo/google.svg";
 import AppleLogo from "../assets/logo/apple.svg";
 import { theme } from "../utils/theme";
-
-const LoginContainer = styled.div`
-  padding: 0 25px;
-  margin: 0 auto;
-  height: calc(100vh - 50px);
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`;
+import FindIdModal from "../components/Login/FindIdModal";
+import ResetPasswordModal from "../components/Login/ResetPasswordModal";
+import { Container } from "../styles";
 
 const Logo = styled.div`
   font-weight: 700;
@@ -141,6 +134,9 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
+  const [isFindIdModalOpen, setIsFindIdModalOpen] = useState(false);
+  const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] =
+    useState(false);
 
   const { mutate: login, isPending } = useAppLogin();
   const { setLogin, isLoggedIn } = useAppStore();
@@ -200,8 +196,25 @@ const LoginPage = () => {
     logger.log("애플 로그인");
   };
 
+  // 모달 핸들러
+  const handleFindIdClick = () => {
+    setIsFindIdModalOpen(true);
+  };
+
+  const handleResetPasswordClick = () => {
+    setIsResetPasswordModalOpen(true);
+  };
+
+  const handleFindIdModalClose = () => {
+    setIsFindIdModalOpen(false);
+  };
+
+  const handleResetPasswordModalClose = () => {
+    setIsResetPasswordModalOpen(false);
+  };
+
   return (
-    <LoginContainer>
+    <Container>
       <Logo>
         <p>오클러</p>
       </Logo>
@@ -234,13 +247,10 @@ const LoginPage = () => {
         </LoginButton>
       </LoginFormWrap>
       <LinkContainer>
-        <SmallButton variant="text" onClick={() => navigate("/Edit/MissID")}>
+        <SmallButton variant="text" onClick={handleFindIdClick}>
           아이디 찾기
         </SmallButton>
-        <SmallButton
-          variant="text"
-          onClick={() => navigate("/Edit/MissPassword")}
-        >
+        <SmallButton variant="text" onClick={handleResetPasswordClick}>
           비밀번호 재설정
         </SmallButton>
         <SmallButton variant="text" onClick={() => navigate("/Join")}>
@@ -268,7 +278,17 @@ const LoginPage = () => {
       <HomeButton type="link" onClick={() => navigate("/")}>
         둘러보기
       </HomeButton>
-    </LoginContainer>
+
+      {/* 모달 컴포넌트들 */}
+      <FindIdModal
+        isOpen={isFindIdModalOpen}
+        onClose={handleFindIdModalClose}
+      />
+      <ResetPasswordModal
+        isOpen={isResetPasswordModalOpen}
+        onClose={handleResetPasswordModalClose}
+      />
+    </Container>
   );
 };
 

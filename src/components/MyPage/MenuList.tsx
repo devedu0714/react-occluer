@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { DownOutlined } from "@ant-design/icons";
 import { theme } from "../../utils/theme";
+import BusinessApplicationForm from "./BusinessApplicationForm";
 
 interface SubMenuItemType {
-  id: string;
-  label: string;
-  onClick: () => void;
+  id?: string;
+  label?: string;
+  onClick?: () => void;
 }
 
 interface MenuItemType {
@@ -66,7 +67,7 @@ const MenuIcon = styled.div<{ isOpen?: boolean }>`
 `;
 
 const SubMenuContainer = styled.div<{ isOpen: boolean }>`
-  max-height: ${(props) => (props.isOpen ? "1000px" : "0")};
+  max-height: ${(props) => (props.isOpen ? "none" : "0")};
   overflow: hidden;
   transition: max-height 0.3s ease;
   background-color: ${theme.colors.white};
@@ -143,11 +144,15 @@ const MenuList: React.FC<MenuListProps> = ({ menuItems }) => {
 
             {hasSubItems && (
               <SubMenuContainer isOpen={isOpen}>
-                {item.subItems!.map((subItem) => (
-                  <SubMenuItem key={subItem.id} onClick={subItem.onClick}>
-                    {subItem.label}
-                  </SubMenuItem>
-                ))}
+                {item.id === "business-application" ? (
+                  <BusinessApplicationForm />
+                ) : (
+                  item.subItems!.map((subItem) => (
+                    <SubMenuItem key={subItem.id} onClick={subItem.onClick}>
+                      {subItem.label}
+                    </SubMenuItem>
+                  ))
+                )}
               </SubMenuContainer>
             )}
           </div>

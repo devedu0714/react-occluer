@@ -6,16 +6,21 @@ import styled from "styled-components";
 const SliderContainer = styled.div`
   width: 100%;
   height: 100%;
+  padding: 10px 20px;
 
   /* Slick 슬라이더 스타일 오버라이드 */
   /* 필수적으로 넣어두기 */
   .slick-slider {
     width: 100% !important;
+    border-radius: 15px;
+    overflow: hidden;
+    margin: 0 auto;
   }
 
   .slick-list {
     width: 100% !important;
     overflow: hidden;
+    border-radius: 15px;
   }
 
   .slick-track {
@@ -59,18 +64,27 @@ const SlideItem = styled.div`
   align-items: center;
   justify-content: center;
   background-color: #f0f0f0;
+  border-radius: 15px;
+  overflow: hidden;
 
   font-size: 2rem;
   font-weight: bold;
   color: #333;
   flex-shrink: 0;
   box-sizing: border-box;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+  }
 `;
 
 const MainBanner = () => {
   // 슬라이드 설정
   const settings = {
-    dots: true,
+    dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 1,
@@ -95,9 +109,15 @@ const MainBanner = () => {
   return (
     <SliderContainer>
       <Slider {...settings}>
-        <SlideItem>슬라이드 1</SlideItem>
-        <SlideItem>슬라이드 2</SlideItem>
-        <SlideItem>슬라이드 3</SlideItem>
+        <SlideItem>
+          <img src="https://picsum.photos/500/300" alt="Banner1" />
+        </SlideItem>
+        <SlideItem>
+          <img src="https://picsum.photos/600/300" alt="Banner2" />
+        </SlideItem>
+        <SlideItem>
+          <img src="https://picsum.photos/600/300" alt="Banner3" />
+        </SlideItem>
       </Slider>
     </SliderContainer>
   );
